@@ -33,7 +33,7 @@ export default function Hero() {
             {...fadeUp(0.55)}
             className="mt-6 max-w-xl text-xl leading-snug text-ink/80 text-balance md:mt-8 md:text-2xl"
           >
-            I build Android apps in Kotlin and Jetpack Compose. Small tools that feel good to use.
+            I build Android apps in Kotlin and Jetpack Compose.
           </motion.p>
 
           <motion.div {...fadeUp(0.7)} className="mt-9 flex flex-wrap items-center gap-3">

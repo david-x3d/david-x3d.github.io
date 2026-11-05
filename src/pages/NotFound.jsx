@@ -18,7 +18,7 @@ export default function NotFound() {
         <h1 className="mt-3 text-[clamp(3.5rem,13vw,9rem)] leading-[0.9] font-semibold tracking-[-0.045em]">
           Nothing <span className="text-accent">here.</span>
         </h1>
-        <p className="mt-6 max-w-md text-lg text-muted">That page doesn't exist. Click the dots for a bit, then head back.</p>
+        <p className="mt-6 max-w-md text-lg text-muted">That page doesn't exist.</p>
         <Link
           to="/"
           className="group mt-9 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 font-medium text-bg transition-transform active:scale-95"

@@ -7,7 +7,8 @@ import { ArrowLeft, ArrowRight, Check, Copy, Download, GitHubIcon, Shield } from
 import { EASE, GlowCard, Magnetic, Reveal, RollingNumber } from '../components/ui'
 import { visuals, Monogram } from '../components/visuals'
 import { useCommits, useReleases, useRepo } from '../lib/github'
-import { repoKey, shortAgo, timeAgo, useNow } from '../lib/hooks'
+import { shortAgo, timeAgo, useNow } from '../lib/hooks'
+import { repoName as repoOf } from '../lib/github-data'
 import { pointer } from '../lib/pointer'
 import { Link } from '../lib/router'
 import { projects } from '../projects'
@@ -757,7 +758,7 @@ function NextProject({ project }) {
 }
 
 export default function ProjectPage({ project }) {
-  const repoName = repoKey(project.github)
+  const repoName = repoOf(project.github)
   const repo = useRepo(repoName)
   const releases = useReleases(repoName)
   const commits = useCommits(repoName)

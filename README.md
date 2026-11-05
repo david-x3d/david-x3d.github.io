@@ -17,7 +17,7 @@ All project cards live in [`src/projects.js`](src/projects.js). Add, remove or r
 
 Every project has its own page at `/<slug>`, built from its `page` object (the comment at the top of the file lists every field). Screenshots for those pages go in `public/projects/<slug>/`.
 
-Repo count, stars, languages, the 30-day activity grid, and each project page's releases, downloads and commits come live from the public GitHub API. The last answer is cached in the browser and refreshed every few minutes, so the numbers update without a redeploy.
+Repo count, stars, languages, the 30-day activity grid, and each project page's releases, downloads and commits come from GitHub. The deploy workflow saves them to `github.json` every 30 minutes with its own token, so they always show up; on top of that the browser asks the GitHub API directly when the snapshot is a few minutes old, until the visitor's hourly limit of 60 requests runs out.
 
 The Discord link in the contact section is set by `discord` at the top of `src/projects.js`.
 
