@@ -1,0 +1,379 @@
+@import '@fontsource-variable/bricolage-grotesque/standard.css';
+@import '@fontsource-variable/jetbrains-mono';
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  color-scheme: light;
+  --bg: #f2f6f5;
+  --surface: #ffffff;
+  --surface-2: #e7eeec;
+  --text: #0d1a1a;
+  --muted: #546766;
+  --line: rgb(13 26 26 / 0.1);
+  --accent: #0a8f86;
+  --accent-strong: #06706a;
+  --accent-soft: rgb(10 143 134 / 0.12);
+  --sky: #3a8bd2;
+  --warm: #e0861c;
+  --dot: rgb(13 26 26 / 0.2);
+  --shadow: 0 1px 2px rgb(13 26 26 / 0.05), 0 14px 34px -14px rgb(13 26 26 / 0.22);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0a0f10;
+  --surface: #101819;
+  --surface-2: #152022;
+  --text: #e3eeed;
+  --muted: #8aa19f;
+  --line: rgb(227 238 237 / 0.09);
+  --accent: #35d3c3;
+  --accent-strong: #66e6d9;
+  --accent-soft: rgb(53 211 195 / 0.12);
+  --sky: #64aef0;
+  --warm: #f5a54b;
+  --dot: rgb(227 238 237 / 0.15);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 18px 40px -18px rgb(0 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-sky: var(--sky);
+  --color-warm: var(--warm);
+}
+
+@theme {
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Theme switch: the new theme grows as a circle out of the toggle (animation is set in JS). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Page changes: the old page sinks away, the new one rises in, and a project card's
+   animation grows into the stage on its page. Names are only set while navigating,
+   so the theme switch above still reveals everything with its circle. */
+html[data-nav] .vt-stage {
+  view-transition-name: var(--vt);
+}
+html[data-nav] .vt-header {
+  view-transition-name: site-header;
+}
+html[data-nav]::view-transition-old(root) {
+  animation: page-out 0.3s cubic-bezier(0.4, 0, 1, 1) both;
+}
+html[data-nav]::view-transition-new(root) {
+  animation: page-in 0.6s var(--ease-out-expo) 0.08s both;
+}
+html[data-nav]::view-transition-group(*) {
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+html[data-nav]::view-transition-group(root) {
+  animation: none;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.985);
+  }
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+@keyframes feature-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- Project cards ---------- */
+
+.card {
+  --mx: 50%;
+  --my: 50%;
+  --rx: 0deg;
+  --ry: 0deg;
+  --lift: 0px;
+  transform: perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--lift));
+  transition:
+    transform 0.35s var(--ease-out-expo),
+    border-color 0.4s,
+    box-shadow 0.4s;
+  transform-style: preserve-3d;
+}
+
+.card[data-active='true'] {
+  --lift: -4px;
+  border-color: color-mix(in oklab, var(--accent) 30%, var(--line));
+  box-shadow: var(--shadow);
+}
+
+.card-glow,
+.card-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.card-glow {
+  background: radial-gradient(460px circle at var(--mx) var(--my), color-mix(in oklab, var(--accent) 11%, transparent), transparent 65%);
+}
+
+.card-border {
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx) var(--my), var(--accent), transparent 70%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.card[data-active='true'] .card-glow,
+.card[data-active='true'] .card-border {
+  opacity: 1;
+}
+
+/* The 0-9 column behind each rolling digit. Generated content stays out of copied text. */
+.digit-strip::before {
+  content: '0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9';
+  white-space: pre;
+}
+
+/* ---------- Card visuals ---------- */
+
+.glass {
+  background: color-mix(in oklab, var(--surface) 38%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+  border: 1px solid rgb(255 255 255 / 0.5);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    0 12px 30px -12px rgb(0 0 0 / 0.3);
+}
+
+[data-theme='dark'] .glass {
+  border-color: rgb(255 255 255 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    0 12px 30px -12px rgb(0 0 0 / 0.6);
+}
+
+.glass-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.22) 50%, transparent 65%);
+  background-size: 250% 100%;
+  animation: sheen 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sheen {
+  0%,
+  20% {
+    background-position: 120% 0;
+  }
+  60%,
+  100% {
+    background-position: -20% 0;
+  }
+}
+
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(26px);
+  opacity: 0.75;
+}
+
+@keyframes blob-a {
+  to {
+    transform: translate(60%, 25%) scale(1.15);
+  }
+}
+@keyframes blob-b {
+  to {
+    transform: translate(-55%, -20%) scale(0.9);
+  }
+}
+@keyframes blob-c {
+  to {
+    transform: translate(-30%, 35%) scale(1.25);
+  }
+}
+
+@keyframes dock-wave {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.32);
+  }
+}
+
+.pixel-sky {
+  background: linear-gradient(
+    180deg,
+    #7fcaea 0%,
+    #bfe6f2 18%,
+    #f6c58f 36%,
+    #e98a6b 46%,
+    #5a4c8c 62%,
+    #1a2246 80%,
+    #0c1230 100%
+  );
+  background-size: 100% 500%;
+  animation: sky-cycle 16s ease-in-out infinite alternate;
+}
+
+@keyframes sky-cycle {
+  from {
+    background-position: 0 0%;
+  }
+  to {
+    background-position: 0 100%;
+  }
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-70px);
+  }
+  to {
+    transform: translateX(280px);
+  }
+}
+
+@keyframes sun-arc {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(150px, 46px);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes ring-breathe {
+  0%,
+  100% {
+    stroke-dashoffset: 40;
+  }
+  50% {
+    stroke-dashoffset: 34;
+  }
+}
+
+/* ---------- Contact ---------- */
+
+.dot-reveal {
+  background-image: radial-gradient(var(--accent) 1.2px, transparent 1.3px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(300px circle at var(--mx, 70%) var(--my, 40%), #000, transparent 75%);
+  mask-image: radial-gradient(300px circle at var(--mx, 70%) var(--my, 40%), #000, transparent 75%);
+  opacity: 0.55;
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
