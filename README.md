@@ -4,8 +4,10 @@ My portfolio site. React + Vite + Tailwind CSS, animations with [Motion](https:/
 
 ## Run it locally
 
+Use Node.js 22, matching [`.nvmrc`](.nvmrc) and the deployment workflow.
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
